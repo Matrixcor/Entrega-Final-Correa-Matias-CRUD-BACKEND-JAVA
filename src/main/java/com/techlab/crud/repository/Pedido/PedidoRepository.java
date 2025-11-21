@@ -1,4 +1,4 @@
-package com.techlab.crud.repository;
+package com.techlab.crud.repository.Pedido;
 
 import com.techlab.crud.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,8 +3,9 @@ package com.techlab.crud.service;
 import com.techlab.crud.model.Articulo;
 import com.techlab.crud.model.DetallePedido;
 import com.techlab.crud.model.Pedido;
-import com.techlab.crud.repository.ArticuloRepository;
-import com.techlab.crud.repository.PedidoRepository;
+import com.techlab.crud.repository.Articulo.ArticuloRepository;
+import com.techlab.crud.repository.Pedido.PedidoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

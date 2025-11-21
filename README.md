@@ -1,48 +1,52 @@
-Refactorizacion crud de articulos utilizando modelo vista controlador.
-Se utiliza un repositorio nuevo para tener codigo limpio.
+
 
 ## Project Overview
-- This is a Spring Boot CRUD application for managing articles, categories, orders, and order details.
-- Main package: `com.techlab.crud`.
-- Key layers: `controller`, `service`, `repository`, `model`.
+- Esta es una aplicacion CRUD de articulos.
+- La aplicacion es un refactorizado del CRUD en consola, para seguir el modelo MVC.
+- Paquete principal: `com.techlab.crud`.
+- Etiquetas: `controller`, `service`, `repository`, `model`.
 
-## Architecture & Patterns
-- **Controllers** (`controller/`): Handle HTTP requests. Example: `ArticulosController.java`, `PedidosController.java`.
-- **Services** (`service/`): Business logic. Use interfaces (e.g., `ArticuloService`) and implementations (e.g., `ArticuloServiceImpl`).
-- **Repositories** (`repository/`): Extend Spring Data JPA repositories for data access. Example: `ArticuloRepository.java`.
-- **Models** (`model/`): JPA entities representing database tables.
-- Follows standard Spring Boot layering and dependency injection.
+## Arquitectura y Patrones
 
-## Developer Workflows
-- **Build:** Use `mvnw clean install` (Windows: `mvnw.cmd clean install`).
-- **Run:** Use `mvnw spring-boot:run` or run `ArticulosApplication.java` from your IDE.
-- **Test:** Use `mvnw test` or run tests in `ArticulosApplicationTests.java`.
-- **Configuration:** Main config in `src/main/resources/application.properties`.
+- Controllers (controller/): Manejan las solicitudes HTTP. Ejemplos: ArticulosController.java, PedidosController.java.
+- Services (service/): Contienen la lógica de negocio. Usan interfaces (por ej. ArticuloService) y sus implementaciones (ArticuloServiceImpl).
+- Repositories (repository/): Extienden los repositorios de Spring Data JPA para acceder a la base de datos. Ejemplo: ArticuloRepository.java.
+- Models (model/): Entidades JPA que representan las tablas de la base de datos.
+- Sigue la estructura estándar de capas de Spring Boot y el uso de inyección de dependencias.
 
-## Conventions & Practices
-- Service interfaces and implementations are split for testability and clarity.
-- Repository interfaces extend `JpaRepository` or similar Spring Data interfaces.
-- Controllers are annotated with `@RestController` or `@Controller`.
-- Entities use JPA annotations (`@Entity`, `@Id`, etc.).
-- Use constructor injection for services where possible.
-- Keep business logic out of controllers.
+## Flujo de Trabajo del Desarrollador
 
-## Integration & Dependencies
-- Uses Spring Boot, Spring Data JPA, and Maven.
-- External configuration via `application.properties`.
-- No custom build or test scripts; standard Maven lifecycle applies.
+- Build: Usar mvnw clean install (Windows: mvnw.cmd clean install).
+- Ejecutar: Usar mvnw spring-boot:run o ejecutar ArticulosApplication.java desde el IDE.
+- Test: Usar mvnw test o ejecutar los tests en ArticulosApplicationTests.java.
+- Configuración: Archivo principal en src/main/resources/application.properties.
 
-## Examples
-- To add a new entity: create a model, repository, service interface/impl, and controller.
-- To add a new endpoint: update the relevant controller and service.
+## Convenciones y Buenas Prácticas
 
-## Key Files & Directories
-- `src/main/java/com/techlab/crud/model/` — JPA entities
-- `src/main/java/com/techlab/crud/repository/` — Spring Data repositories
-- `src/main/java/com/techlab/crud/service/` — Service interfaces and implementations
-- `src/main/java/com/techlab/crud/controller/` — REST controllers
-- `src/main/resources/application.properties` — Main configuration
+- Las interfaces de servicios y sus implementaciones están separadas para mejorar la claridad y la capacidad de testeo.
+- Los repositorios extienden JpaRepository u otras interfaces de Spring Data.
+- Los controladores usan @RestController o @Controller.
+- Las entidades usan anotaciones JPA (@Entity, @Id, etc.).
+- Se recomienda usar inyección de dependencias por constructor.
+- Mantener la lógica de negocio fuera de los controladores.
 
----
+## Integración y Dependencias
 
-For questions or unclear patterns, ask for clarification or check similar files in the relevant directory.
+- Usa Spring Boot, Spring Data JPA y Maven.
+- Configuración externa mediante application.properties.
+- No hay scripts personalizados; se usa el ciclo de vida estándar de Maven.
+
+## Ejemplos
+
+- Para agregar una nueva entidad: crear el modelo, el repositorio, la interfaz e implementación del servicio y el controlador.
+- Para agregar un nuevo endpoint: actualizar el controlador y el servicio correspondiente.
+
+## Archivos y Directorios Clave
+
+- src/main/java/com/techlab/crud/model/ — Entidades JPA
+- src/main/java/com/techlab/crud/repository/ — Repositorios Spring Data
+- src/main/java/com/techlab/crud/service/ — Interfaces e implementaciones de servicios
+- src/main/java/com/techlab/crud/controller/ — Controladores REST
+- src/main/resources/application.properties — Configuración principal
+
+Si querés, también puedo traducir comentarios dentro del código, revisar la estructura o mejorar tu documentación.

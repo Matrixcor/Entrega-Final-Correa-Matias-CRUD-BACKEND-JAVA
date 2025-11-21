@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/articulos")
 
@@ -28,8 +27,7 @@ public class ArticulosController {
         try {
             return articuloService.save(articulo);
         } catch (IllegalArgumentException e) {
-            // 3. Maneja el error de validación del servicio y devuelve un error al cliente.
-            // (En un caso real, usarías @ResponseStatus para devolver un 400 Bad Request)
+           
             throw new RuntimeException("Error de validación: " + e.getMessage());
         }
     }
