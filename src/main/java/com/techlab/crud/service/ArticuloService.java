@@ -1,8 +1,9 @@
 package com.techlab.crud.service;
 
-import com.techlab.crud.model.Articulo;
 import java.util.List;
 import java.util.Optional;
+
+import com.techlab.crud.model.Articulo.Articulo;
 
 public interface ArticuloService {
     Articulo save(Articulo articulo);

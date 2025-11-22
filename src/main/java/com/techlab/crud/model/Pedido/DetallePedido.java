@@ -1,4 +1,6 @@
-package com.techlab.crud.model;
+package com.techlab.crud.model.Pedido;
+
+import com.techlab.crud.model.Articulo.Articulo;
 
 import jakarta.persistence.*;
 import lombok.Data;

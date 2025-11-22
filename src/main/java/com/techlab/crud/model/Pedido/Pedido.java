@@ -1,10 +1,11 @@
-package com.techlab.crud.model;
+package com.techlab.crud.model.Pedido;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 @Data 
 @NoArgsConstructor
@@ -21,5 +22,5 @@ public class Pedido {
     private LocalDateTime fecha = LocalDateTime.now();
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetallePedido> detalles;
+    private List<DetallePedido> detalles = new ArrayList<>();
 }

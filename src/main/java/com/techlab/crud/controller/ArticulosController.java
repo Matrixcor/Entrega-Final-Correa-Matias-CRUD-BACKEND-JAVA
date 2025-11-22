@@ -1,6 +1,6 @@
 package com.techlab.crud.controller;
 
-import com.techlab.crud.model.Articulo;
+import com.techlab.crud.model.Articulo.Articulo;
 import com.techlab.crud.service.ArticuloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

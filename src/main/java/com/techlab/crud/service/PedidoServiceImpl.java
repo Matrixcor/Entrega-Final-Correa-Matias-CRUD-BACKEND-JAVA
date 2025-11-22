@@ -1,8 +1,8 @@
 package com.techlab.crud.service;
 
-import com.techlab.crud.model.Articulo;
-import com.techlab.crud.model.DetallePedido;
-import com.techlab.crud.model.Pedido;
+import com.techlab.crud.model.Articulo.Articulo;
+import com.techlab.crud.model.Pedido.DetallePedido;
+import com.techlab.crud.model.Pedido.Pedido;
 import com.techlab.crud.repository.Articulo.ArticuloRepository;
 import com.techlab.crud.repository.Pedido.PedidoRepository;
 
@@ -62,7 +62,7 @@ public class PedidoServiceImpl implements PedidoService {
     // ... otros métodos (save, findAll, findById) ...
     @Override
     public List<Pedido> findAll() {
-        return pedidoRepository.findByEstadoNotCanceled("CANCELADO");
+        return pedidoRepository.findByEstadoNot("CANCELADO");
     }
     
     @Override

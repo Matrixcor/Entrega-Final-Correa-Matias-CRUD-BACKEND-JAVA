@@ -1,8 +1,9 @@
 package com.techlab.crud.service;
 
-import com.techlab.crud.model.Pedido;
 import java.util.List;
 import java.util.Optional;
+
+import com.techlab.crud.model.Pedido.Pedido;
 
 public interface PedidoService {
     

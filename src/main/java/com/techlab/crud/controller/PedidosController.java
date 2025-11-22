@@ -1,8 +1,7 @@
 package com.techlab.crud.controller;
 
-import com.techlab.crud.model.Pedido;
+import com.techlab.crud.model.Pedido.Pedido;
 import com.techlab.crud.service.PedidoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +10,11 @@ import java.util.Optional;
 @RequestMapping("/api/pedidos") 
 public class PedidosController {
 
-    @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
+
+    public PedidosController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
 
     @GetMapping
     public List<Pedido> listarPedidos() { 
