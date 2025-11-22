@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/articulos")
@@ -39,6 +40,7 @@ public class ArticulosController {
     
     @GetMapping("/{id}")
     public Optional<Articulo> obtenerPorId(@PathVariable Long id) {
+        Objects.requireNonNull(id, "id no puede ser nulo");
         return articuloService.findById(id);
     }
 }

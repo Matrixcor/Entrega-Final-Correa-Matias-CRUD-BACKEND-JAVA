@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class ArticuloServiceImpl implements ArticuloService {
@@ -36,8 +37,8 @@ public class ArticuloServiceImpl implements ArticuloService {
         }
         if (articulo.getCategoria() == null || articulo.getCategoria().getId() == null) {
             throw new IllegalArgumentException("Debe seleccionar una categoría válida.");
-        }else{
-            Long categoriaId = articulo.getCategoria().getId();
+        } else {
+            Long categoriaId = Objects.requireNonNull(articulo.getCategoria().getId(), "Categoria.id no puede ser nulo");
             Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoriaId);
             if (categoriaOpt.isEmpty()) {
                 throw new IllegalArgumentException("La categoría con ID " + categoriaId + " no fue encontrada.");
@@ -68,10 +69,12 @@ public class ArticuloServiceImpl implements ArticuloService {
     
     @Override
     public Optional<Articulo> findById(Long id) {
+        Objects.requireNonNull(id, "id no puede ser nulo");
         return repository.findById(id);
     }
     @Override
     public void deleteById(Long id) {
+        Objects.requireNonNull(id, "id no puede ser nulo");
         Articulo articulo = repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
         articulo.setActivo(false);

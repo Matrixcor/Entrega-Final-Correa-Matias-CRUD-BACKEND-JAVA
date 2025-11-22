@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class PedidoServiceImpl implements PedidoService {
@@ -19,47 +20,32 @@ public class PedidoServiceImpl implements PedidoService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private ArticuloRepository articuloRepository; // Necesario para obtener el precio real
+    private ArticuloRepository articuloRepository;
 
     @Override
-    @Transactional // LA TRANSACCIÓN ABARCA TODA LA OPERACIÓN COMPLEJA
+    @Transactional
     public Pedido save(Pedido pedido) {
         
         Double totalFinal = 0.0;
 
-        // 1. VALIDACIÓN Y PREPARACIÓN DE DETALLES
         for (DetallePedido detalle : pedido.getDetalles()) {
-            
-            // A. Recuperar el artículo real de la BD para asegurar que existe
-            Long articuloId = detalle.getArticulo().getId();
+            Objects.requireNonNull(detalle.getArticulo(), "DetallePedido.articulo no puede ser nulo");
+            Long articuloId = Objects.requireNonNull(detalle.getArticulo().getId(), "Artículo.id no puede ser nulo");
             Articulo articuloDB = articuloRepository.findById(articuloId)
                 .orElseThrow(() -> new IllegalArgumentException("Artículo con ID " + articuloId + " no encontrado."));
             
             // B. VALIDACIÓN DE STOCK (Lógica de Negocio)
             // if (articuloDB.getStock() < detalle.getCantidad()) { ... throw ... }
             
-            // C. FIJAR PRECIO Y VINCULACIÓN
-            // Se usa el precio actual del artículo, no el que el cliente pueda haber enviado en el JSON.
             detalle.setPrecioUnidad(articuloDB.getPrecio().doubleValue()); 
-            
-            // Vincular el detalle al pedido padre (¡CRUCIAL para JPA!)
             detalle.setPedido(pedido);
-            
-            // D. CALCULAR TOTAL
             totalFinal += detalle.getPrecioUnidad() * detalle.getCantidad();
         }
-
-        // 2. FIJAR TOTAL Y ESTADO EN EL PEDIDO CABECERA
         pedido.setTotal(totalFinal);
-        
-        // 3. PERSISTENCIA EN CASCADA
-        // Como Pedido tiene un CascadeType.ALL en su relación @OneToMany
-        // con DetallePedido, al guardar el pedido padre, todos sus detalles se guardan automáticamente.
         return pedidoRepository.save(pedido); 
     }
-    // Dentro de PedidoServiceImpl.java
 
-    // ... otros métodos (save, findAll, findById) ...
+    // otros métodos (save)
     @Override
     public List<Pedido> findAll() {
         return pedidoRepository.findByEstadoNot("CANCELADO");
@@ -67,7 +53,7 @@ public class PedidoServiceImpl implements PedidoService {
     
     @Override
     public Optional<Pedido> findById(Long id) {
-        // Delegar la búsqueda al repositorio
+        Objects.requireNonNull(id, "id no puede ser nulo");
         return pedidoRepository.findById(id);
     }
     @Override
@@ -76,6 +62,7 @@ public class PedidoServiceImpl implements PedidoService {
         //    (ej. verificar el estado del pedido antes de eliminarlo).
     
         // 2. Delegar la persistencia al Repositorio
+        Objects.requireNonNull(id, "id no puede ser nulo");
         pedidoRepository.deleteById(id);
     }
 }
