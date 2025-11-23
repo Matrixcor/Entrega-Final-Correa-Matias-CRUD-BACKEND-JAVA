@@ -1,7 +1,6 @@
 package com.techlab.crud.model.Articulo;
 
 import java.util.List;
-
 import com.techlab.crud.model.Categoria.Categoria;
 import com.techlab.crud.model.Pedido.DetallePedido;
 

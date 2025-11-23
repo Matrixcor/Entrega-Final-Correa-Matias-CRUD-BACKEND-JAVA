@@ -1,4 +1,4 @@
-package com.techlab.crud.service;
+package com.techlab.crud.service.ArticuloService;
 
 import java.util.List;
 import java.util.Optional;

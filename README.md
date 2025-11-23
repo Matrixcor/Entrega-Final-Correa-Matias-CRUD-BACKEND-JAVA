@@ -40,6 +40,7 @@
 
 - Para agregar una nueva entidad: crear el modelo, el repositorio, la interfaz e implementación del servicio y el controlador.
 - Para agregar un nuevo endpoint: actualizar el controlador y el servicio correspondiente.
+- Para crear una nueva categoria, el front consulta la db categorias y realiza las operaciones de creacion y devuelve un json hacia el endpoint de creacion de la nueva categoria.
 
 ## Archivos y Directorios Clave
 

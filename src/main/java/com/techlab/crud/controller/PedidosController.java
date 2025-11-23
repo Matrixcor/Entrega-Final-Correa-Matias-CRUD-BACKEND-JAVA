@@ -1,21 +1,18 @@
 package com.techlab.crud.controller;
 
 import com.techlab.crud.model.Pedido.Pedido;
-import com.techlab.crud.service.PedidoService;
+import com.techlab.crud.service.PedidoService.PedidoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/pedidos") 
 public class PedidosController {
 
-    private final PedidoService pedidoService;
-
-    public PedidosController(PedidoService pedidoService) {
-        this.pedidoService = pedidoService;
-    }
+    @Autowired
+    private PedidoService pedidoService;
 
     @GetMapping
     public List<Pedido> listarPedidos() { 
@@ -24,7 +21,6 @@ public class PedidosController {
     
     @GetMapping("/{id}")
     public Optional<Pedido> obtenerPedidoPorId(@PathVariable Long id) {
-        Objects.requireNonNull(id, "id no puede ser nulo");
         return pedidoService.findById(id);
     }
     
@@ -35,7 +31,6 @@ public class PedidosController {
     
     @DeleteMapping("/{id}")
     public void eliminarPedido(@PathVariable Long id) {
-        Objects.requireNonNull(id, "id no puede ser nulo");
         pedidoService.deleteById(id);
     }
 }

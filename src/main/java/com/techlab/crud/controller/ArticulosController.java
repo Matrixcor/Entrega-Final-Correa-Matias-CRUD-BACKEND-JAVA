@@ -1,18 +1,18 @@
 package com.techlab.crud.controller;
 
 import com.techlab.crud.model.Articulo.Articulo;
-import com.techlab.crud.service.ArticuloService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.techlab.crud.service.ArticuloService.ArticuloService;
+//import org.springframework.web.server.ResponseStatusException;
+//import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/articulos")
@@ -40,7 +40,6 @@ public class ArticulosController {
     
     @GetMapping("/{id}")
     public Optional<Articulo> obtenerPorId(@PathVariable Long id) {
-        Objects.requireNonNull(id, "id no puede ser nulo");
         return articuloService.findById(id);
     }
 }
