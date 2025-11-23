@@ -6,6 +6,7 @@ import com.techlab.crud.repository.Usuario.UserRepository;
 import com.techlab.crud.repository.Roles.RoleRepository;
 
 import com.techlab.crud.exception.RoleNoEncontradoException;
+import com.techlab.crud.exception.UsuarioNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Necesario para hashing
 import org.springframework.stereotype.Service;
@@ -21,12 +22,12 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository; // Repositorio para buscar el rol
+    private RoleRepository roleRepository;
     
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder; // Inyector de BCrypt
+    private BCryptPasswordEncoder passwordEncoder;
 
-    // --- LÓGICA DE NEGOCIO CRUCIAL: HASHING Y ASIGNACIÓN DE ROL ---
+    // HASHING Y ASIGNACIÓN DE ROL
     @Override
     @Transactional
     public Usuario save(Usuario usuario) {
@@ -46,19 +47,35 @@ public class UserServiceImpl implements UserService {
         
         usuario.setRole(roleOpt.get());
 
-        // 2. Cifrado de Contraseña (Hashing)
-        if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
-            String hashedPassword = passwordEncoder.encode(usuario.getPassword());
-            usuario.setPassword(hashedPassword); 
-        } else if (usuario.getId() == null) {
-            throw new IllegalArgumentException("Se requiere una nueva contraseña para usuario.");
-        }
-        if (usuario.getId() == null) {
-            usuario.setActivo(true);
+        // --- 2. Gestión de Contraseña y Estado Activo ---
+        if (usuario.getId() != null) {
+
+            Usuario usuarioExistente = userRepository.findById(Objects.requireNonNull(usuario.getId()))
+            .orElseThrow(() -> new UsuarioNoEncontradoException(usuario.getId()));
+
+            // Si el payload NO trae una nueva contraseña (es nulo o vacío), PRESERVAMOS la antigua.
+            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+                usuario.setPassword(usuarioExistente.getPassword());
+            }
+        
+            usuario.setActivo(usuarioExistente.getActivo()); 
+
+        } else {
+
+        if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Se requiere una contraseña para el registro de un nuevo usuario.");
         }
 
-       
-        return userRepository.save(usuario);
+        usuario.setActivo(true);
+    }
+    
+    // HASHING si hay una nueva contraseña
+    if (usuario.getPassword() != null && !usuario.getPassword().isEmpty() && !usuario.getPassword().startsWith("$2a$")) {
+        String hashedPassword = passwordEncoder.encode(usuario.getPassword());
+        usuario.setPassword(hashedPassword);
+    }
+    
+    return userRepository.save(usuario);
     }
 
     @Override
@@ -86,9 +103,8 @@ public class UserServiceImpl implements UserService {
     public void deactivateById(Long id) {
         Objects.requireNonNull(id, "El ID no puede ser nulo.");
         
-        Usuario usuario = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario con ID " + id + " no encontrado.")); 
-        
+        Usuario usuario = userRepository.findById(id) 
+            .orElseThrow(() -> new UsuarioNoEncontradoException(id));        
         usuario.setActivo(false); 
         userRepository.save(usuario);
     }
