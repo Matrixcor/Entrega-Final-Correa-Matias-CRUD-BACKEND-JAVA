@@ -1,7 +1,8 @@
 package com.techlab.crud.service.CategoriaService;
 
 import org.springframework.stereotype.Service;
-import com.techlab.crud.model.Categoria.Categoria;
+
+import com.techlab.crud.model.categoria.Categoria;
 import com.techlab.crud.repository.Categoria.CategoriaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     private CategoriaRepository categoriaRepository;
 
     @Override
-    @Transactional
+    @Transactional("articuloTransactionManager")
     public Categoria save(Categoria categoria) {
         if (categoria.getId() == null) {
             categoria.setActivo(true);
@@ -27,20 +28,20 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
     
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("articuloTransactionManager")
     public List<Categoria> findAllActivas() {
         return categoriaRepository.findByActivoTrue();
     }
     
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("articuloTransactionManager")
     public Optional<Categoria> findById(Long id) {
         Objects.requireNonNull(id, "El ID de la categoría no puede estar vacio.");
         return categoriaRepository.findById(id);
     }
     
     @Override
-    @Transactional
+    @Transactional("articuloTransactionManager")
     public void deactivateById(Long id) {
         Objects.requireNonNull(id, "El ID de la categoría no puede estar vacio.");
         

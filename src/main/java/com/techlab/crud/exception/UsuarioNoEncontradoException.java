@@ -9,7 +9,6 @@ public class UsuarioNoEncontradoException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public UsuarioNoEncontradoException(Long usuarioId) {
-        // Mensaje específico para el usuario
         super("El usuario con ID " + usuarioId + " no fue encontrado o está inactivo.");
     }
 }

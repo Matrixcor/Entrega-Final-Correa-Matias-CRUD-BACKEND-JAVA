@@ -2,17 +2,18 @@ package com.techlab.crud.service.PedidoService;
 
 import com.techlab.crud.model.Pedido.Pedido;
 import com.techlab.crud.model.Pedido.DetallePedido;
-import com.techlab.crud.model.Articulo.Articulo;
 import com.techlab.crud.repository.Pedido.PedidoRepository;
-import com.techlab.crud.service.ArticuloService.ArticuloService;
+import com.techlab.crud.service.ArticuloService.ArticuloClienteService;
+import com.techlab.crud.dto.Articulo.ArticuloStockPrecioDTO;
+import com.techlab.crud.dto.DetallePedido.DetallePedidoRequestDTO;
+import com.techlab.crud.dto.Pedido.PedidoRequestDTO;
 import com.techlab.crud.exception.StockInsuficienteException;
-import com.techlab.crud.exception.ArticuloNoEncontradoException;
-import com.techlab.crud.exception.EstadoPedidoInvalidoException;
 import com.techlab.crud.exception.PedidoNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Locale;
@@ -24,113 +25,133 @@ public class PedidoServiceImpl implements PedidoService {
     private PedidoRepository pedidoRepository;
     
     @Autowired
-    private ArticuloService articuloService; 
-    
+    private ArticuloClienteService articuloClienteService;
+
     private static final List<String> ESTADOS_VALIDOS = List.of("PENDIENTE", "ENVIADO", "COMPLETADO", "CANCELADO");
 
     @Override
-    @Transactional
-    public Pedido save(Pedido pedido) {
+    @Transactional("pedidosTransactionManager")
+    public Pedido crearPedido(PedidoRequestDTO pedidoDTO) {
+        
+        Pedido nuevoPedido = new Pedido();
+        nuevoPedido.setNombreCliente(pedidoDTO.getNombreCliente());
+        nuevoPedido.setClienteId(pedidoDTO.getClienteId());
+        
         double totalCalculado = 0.0;
+        List<DetallePedido> detalles = new ArrayList<>();
 
-        if (pedido.getDetalles() == null || pedido.getDetalles().isEmpty()) {
+        if (pedidoDTO.getDetalles() == null || pedidoDTO.getDetalles().isEmpty()) {
             throw new IllegalArgumentException("El pedido debe contener al menos un artículo.");
         }
-
-        for (DetallePedido detalle : pedido.getDetalles()) {
-            if (detalle.getArticulo() == null || detalle.getArticulo().getId() == null) {
-                 throw new IllegalArgumentException("Cada detalle de pedido debe tener una referencia de Artículo válida.");
-            }
-            if (detalle.getCantidad() == null || detalle.getCantidad() <= 0) {
-                 throw new IllegalArgumentException("La cantidad solicitada debe ser mayor que cero.");
-            }
-            
-
-            Long articuloId = Objects.requireNonNull(detalle.getArticulo().getId(), 
-            "El ID del artículo en el detalle no puede ser nulo.");
-
-            Articulo articulo = articuloService.findById(articuloId)
-                .orElseThrow(() -> new ArticuloNoEncontradoException(articuloId));
-            
-            Integer stockSolicitado = detalle.getCantidad();
         
-            Integer stockDisponible = Optional.ofNullable(articulo.getStock()).orElse(0);
+        for (DetallePedidoRequestDTO detalleDTO : pedidoDTO.getDetalles()) { 
+            Long articuloId = detalleDTO.getArticuloId(); 
+            Integer stockSolicitado = detalleDTO.getCantidad();
+
+            ArticuloStockPrecioDTO articuloData = articuloClienteService.getArticuloById(articuloId); 
+            Integer stockDisponible = Optional.ofNullable(articuloData.getStock()).orElse(0);
 
             if (stockSolicitado > stockDisponible) {
-                throw new StockInsuficienteException(articulo.getNombre(), stockDisponible, stockSolicitado);
+                throw new StockInsuficienteException(articuloData.getNombre(), stockDisponible, stockSolicitado);
             }
 
-            detalle.setPrecioUnidad(articulo.getPrecio());
-            double subTotalCalculadoLocal = detalle.getCantidad() * articulo.getPrecio();
+            DetallePedido detalle = new DetallePedido();
+            //detalle.setArticuloId(articuloData.getId());
+            detalle.setArticuloId(articuloData.getArticuloId());
+            detalle.setPrecioUnidad(articuloData.getPrecio());
+            detalle.setNombreArticulo(articuloData.getNombre());
+            detalle.setCantidad(stockSolicitado);
+            
+            double subTotalCalculadoLocal = stockSolicitado * articuloData.getPrecio();
+            detalle.setSubtotal(subTotalCalculadoLocal);
+            detalle.setPedido(nuevoPedido);
+            
             totalCalculado += subTotalCalculadoLocal;
-
-            detalle.setPedido(pedido);
-            detalle.setArticulo(articulo); 
-            articulo.setStock(stockDisponible - stockSolicitado);
-            articuloService.save(articulo);
+            detalles.add(detalle);
         }
-        pedido.setTotal(totalCalculado);
         
-        return pedidoRepository.save(pedido);
+        for (DetallePedido detalle : detalles) {
+            articuloClienteService.descontarStock(detalle.getArticuloId(), detalle.getCantidad()); 
+        }
+
+        nuevoPedido.setDetalles(detalles);
+        nuevoPedido.setTotal(totalCalculado);
+        nuevoPedido.setEstado("PENDIENTE"); 
+        
+        return pedidoRepository.save(nuevoPedido); 
     }
-    
+
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("pedidosTransactionManager")
     public Optional<Pedido> findById(Long id) {
         Objects.requireNonNull(id, "El ID del pedido no puede ser nulo");
-        return pedidoRepository.findById(id);
+        return pedidoRepository.findById(id); 
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("pedidosTransactionManager")
     public List<Pedido> findAll() {
         return pedidoRepository.findAll();
     }
 
     @Override
-    @Transactional
+    @Transactional("pedidosTransactionManager")
     public Pedido updateEstado(Long id, String nuevoEstado) {
+
         Objects.requireNonNull(id, "El ID del pedido no puede ser nulo");
         String estadoUpper = nuevoEstado.toUpperCase(Locale.ROOT);
-        if (!ESTADOS_VALIDOS.contains(estadoUpper)) {
-            throw new EstadoPedidoInvalidoException(nuevoEstado);
-        }
         
+        if (!ESTADOS_VALIDOS.contains(estadoUpper)) {
+            throw new IllegalArgumentException("Estado de pedido inválido: " + nuevoEstado);
+        }
+
         Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new PedidoNoEncontradoException(id));
-        
+
+        if (!esTransicionValida(pedido.getEstado(), estadoUpper)) {
+            throw new IllegalArgumentException("Transición inválida de " + pedido.getEstado() + " a " + estadoUpper);
+        }
         pedido.setEstado(estadoUpper);
         return pedidoRepository.save(pedido);
     }
+    
+    private boolean esTransicionValida(String estadoActual, String nuevoEstado) {
+        if (estadoActual.equals(nuevoEstado)) {
+            return true;
+        }
+        switch (estadoActual) {
+            case "PENDIENTE":
+                return nuevoEstado.equals("ENVIADO") || nuevoEstado.equals("CANCELADO");
+            case "ENVIADO":
+                return nuevoEstado.equals("COMPLETADO") || nuevoEstado.equals("CANCELADO");
+            case "COMPLETADO":
+                return false; // No se puede cambiar un pedido completado (inmutable)
+            case "CANCELADO":
+                return false; // No se puede cambiar un pedido cancelado (inmutable)
+            default:
+                return false;
+        }
+    }
+
     @Override
-    @Transactional
+    @Transactional("pedidosTransactionManager")
     public void deleteById(Long id) {
+
         Objects.requireNonNull(id, "El ID del pedido no puede ser nulo.");
-    
         Pedido pedido = pedidoRepository.findById(id)
-        .orElseThrow(() -> new PedidoNoEncontradoException(id));
-
-        // 1. Validación de Estado para Cancelación
-        if (pedido.getEstado().equals("COMPLETADO") || pedido.getEstado().equals("CANCELADO")) {
-            // No permitimos cancelar si ya está completado o previamente cancelado
-            throw new EstadoPedidoInvalidoException(
-            "No se puede cancelar un pedido que ya está en estado: " + pedido.getEstado());
+            .orElseThrow(() -> new PedidoNoEncontradoException(id));
+            
+        if (pedido.getEstado().equals("COMPLETADO")) {
+            throw new IllegalArgumentException("No se puede eliminar/cancelar un pedido completado.");
         }
-    
-        for (DetallePedido detalle : pedido.getDetalles()) {
-        
-            Long articuloId = detalle.getArticulo().getId();
-            Articulo articuloAActualizar = articuloService.findById(articuloId)
-                .orElseThrow(() -> new RuntimeException(
-                "Error interno: Artículo ID " + articuloId + " asociado al pedido no fue encontrado para el control de stock."
-            ));
 
-            Integer cantidadADevolver = detalle.getCantidad();
-            Integer stockActual = Optional.ofNullable(articuloAActualizar.getStock()).orElse(0);
-            articuloAActualizar.setStock(stockActual + cantidadADevolver);
-            articuloService.save(articuloAActualizar);
+        if (!pedido.getEstado().equals("CANCELADO")) {
+             for (DetallePedido detalle : pedido.getDetalles()) {
+                Long articuloId = detalle.getArticuloId(); 
+                Integer cantidadADevolver = detalle.getCantidad();
+                articuloClienteService.sumarStock(articuloId, cantidadADevolver); 
+            }
         }
-    
         pedido.setEstado("CANCELADO");
         pedidoRepository.save(pedido);
     }

@@ -1,12 +1,11 @@
-package com.techlab.crud.model.Articulo;
+package com.techlab.crud.model.articulo;
 
-import java.util.List;
-import com.techlab.crud.model.Categoria.Categoria;
-import com.techlab.crud.model.Pedido.DetallePedido;
+import com.techlab.crud.model.categoria.Categoria;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @NoArgsConstructor
@@ -23,12 +22,10 @@ public class Articulo {
     private Double precio;
     private Integer stock;
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
+    @ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "categoria_id") 
     private Categoria categoria;
-
-    private boolean activo = true;
-
-    @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
-    private List<DetallePedido> detallesPedido;
+    
+    private Boolean activo = true;
+    
 }

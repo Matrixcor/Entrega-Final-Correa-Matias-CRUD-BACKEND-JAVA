@@ -1,4 +1,4 @@
-package com.techlab.crud.model.Categoria;
+package com.techlab.crud.model.categoria;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

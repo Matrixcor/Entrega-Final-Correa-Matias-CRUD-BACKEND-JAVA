@@ -1,6 +1,6 @@
 package com.techlab.crud;
 
-import com.techlab.crud.model.Articulo.Articulo;
+import com.techlab.crud.model.articulo.Articulo;
 import com.techlab.crud.repository.Articulo.ArticuloRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

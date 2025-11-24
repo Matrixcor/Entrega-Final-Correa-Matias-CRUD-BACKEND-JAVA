@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
 
     // HASHING Y ASIGNACIÓN DE ROL
     @Override
-    @Transactional
+    //@Transactional
+    @Transactional("usuarioTransactionManager")
     public Usuario save(Usuario usuario) {
         Objects.requireNonNull(usuario, "El objeto usuario no puede ser nulo.");
     
@@ -79,27 +80,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("usuarioTransactionManager")
     public Optional<Usuario> findById(Long id) {
         Objects.requireNonNull(id, "El ID no puede ser nulo.");
         return userRepository.findById(id);
     }
     
     @Override
-    @Transactional(readOnly = true)
+    @Transactional("usuarioTransactionManager")
     public Optional<Usuario> findByEmail(String email) {
         Objects.requireNonNull(email, "El email no puede ser nulo.");
         return userRepository.findByEmailAndActivoTrue(email);
     }
 
     @Override
-    @Transactional(readOnly = true)
+   @Transactional("usuarioTransactionManager")
     public List<Usuario> findAllActivos() {
         return userRepository.findByActivoTrue();
     }
 
     @Override
-    @Transactional
+    @Transactional("usuarioTransactionManager")
     public void deactivateById(Long id) {
         Objects.requireNonNull(id, "El ID no puede ser nulo.");
         

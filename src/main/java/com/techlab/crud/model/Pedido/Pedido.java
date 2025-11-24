@@ -14,12 +14,15 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String cliente;
+    private String nombreCliente;
     private Double total;
     
+
+    @Column(name = "cliente_id", nullable = false) 
+    private Long clienteId;
     private String estado = "PENDIENTE"; 
     private LocalDateTime fecha = LocalDateTime.now();
     
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetallePedido> detalles;
 }

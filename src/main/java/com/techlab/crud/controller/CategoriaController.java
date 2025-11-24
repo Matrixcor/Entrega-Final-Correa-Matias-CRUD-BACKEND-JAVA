@@ -1,6 +1,6 @@
 package com.techlab.crud.controller;
 
-import com.techlab.crud.model.Categoria.Categoria;
+import com.techlab.crud.model.categoria.Categoria;
 import com.techlab.crud.service.CategoriaService.CategoriaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +27,17 @@ public class CategoriaController {
         return categoriaService.findAllActivas();
     }
    
-    @GetMapping("/{id}")
-    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Long id) {
-        return categoriaService.findById(id)
+    @GetMapping("/{cid}")
+    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Long cid) {
+        return categoriaService.findById(cid)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
+    @PutMapping("/{cid}")
+    public ResponseEntity<?> updateCategoria(@PathVariable Long cid, @RequestBody Categoria categoria) {
         try {
-            categoria.setId(id);
+            categoria.setId(cid);
             
             Categoria categoriaActualizada = categoriaService.save(categoria);
             
@@ -47,10 +47,10 @@ public class CategoriaController {
         }
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategoriaLogica(@PathVariable Long id) {
+    @DeleteMapping("/{cid}")
+    public ResponseEntity<Void> deleteCategoriaLogica(@PathVariable Long cid) {
         try {
-            categoriaService.deactivateById(id);
+            categoriaService.deactivateById(cid);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

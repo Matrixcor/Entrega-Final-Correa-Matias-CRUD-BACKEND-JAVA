@@ -1,8 +1,9 @@
 package com.techlab.crud.service.CategoriaService;
 
-import com.techlab.crud.model.Categoria.Categoria;
 import java.util.List;
 import java.util.Optional;
+
+import com.techlab.crud.model.categoria.Categoria;
 
 public interface CategoriaService {
     

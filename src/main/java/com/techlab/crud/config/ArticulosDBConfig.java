@@ -12,8 +12,6 @@ import org.springframework.orm.jpa.*;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import java.util.Objects;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -21,7 +19,7 @@ import jakarta.persistence.EntityManagerFactory;
 @EnableTransactionManagement
 
 @EnableJpaRepositories(
-    basePackages = "com.techlab.crud.repository.Articulo",
+    basePackages ={ "com.techlab.crud.repository.Articulo", "com.techlab.crud.repository.Categoria"},
     entityManagerFactoryRef = "articuloEntityManagerFactory",
     transactionManagerRef = "articuloTransactionManager"
 )
@@ -51,7 +49,8 @@ public class ArticulosDBConfig {
     ) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(articuloDataSource);
-        em.setPackagesToScan("com.techlab.crud.model");
+        //em.setPackagesToScan("com.techlab.crud.model");
+        em.setPackagesToScan("com.techlab.crud.model.Articulo", "com.techlab.crud.model.Categoria");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setPersistenceUnitName("articulosPU");
         em.getJpaPropertyMap().put("hibernate.hbm2ddl.auto", ddlAuto);

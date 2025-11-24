@@ -41,7 +41,7 @@ public class UsuarioController {
         
         try { 
             Usuario usuarioActualizado = userService.save(usuarioDetails);
-            return ResponseEntity.ok(usuarioActualizado); // Devuelve 200 OK
+            return ResponseEntity.ok(usuarioActualizado);
         } catch (UsuarioNoEncontradoException e) {
             throw e; 
         }

@@ -20,17 +20,14 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // La contraseña debe almacenarse hasheada (cifrada con bcrypt, por ejemplo)
     @Column(nullable = false)
     private String password; 
     private String nombreCompleto; 
     private Boolean activo = true; 
-    // Se asume que un Usuario tiene UN Rol (ManyToOne)
-    @ManyToOne(fetch = FetchType.EAGER) // FetchType.EAGER: Cargar el rol inmediatamente
+    
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Roles role;
-    
-    // --- Constructor helper (Opcional, si usas la lógica de negocio en el modelo) ---
     
     @PrePersist
     protected void onCreate() {

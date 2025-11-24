@@ -45,7 +45,7 @@ public class PedidosDBConfig {
     ) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(pedidosDataSource);
-        em.setPackagesToScan("com.techlab.crud.model");
+        em.setPackagesToScan("com.techlab.crud.model.Pedido");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setPersistenceUnitName("pedidosPU");
         em.getJpaPropertyMap().put("hibernate.hbm2ddl.auto", System.getProperty("spring.jpa.hibernate.ddl-auto", "update"));

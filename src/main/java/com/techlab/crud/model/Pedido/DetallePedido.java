@@ -1,7 +1,6 @@
 package com.techlab.crud.model.Pedido;
 
-import com.techlab.crud.model.Articulo.Articulo;
-
+//import com.techlab.crud.model.Articulo.Articulo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,14 +14,16 @@ public class DetallePedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    private String nombreArticulo;
+    private String marcaArticulo;
     private Double precioUnidad; 
     private Integer cantidad;
+    private Double subtotal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "articulo_id")
-    private Articulo articulo;
+    @Column(name = "articulo_id", nullable = false)
+    private Long articuloId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 }
