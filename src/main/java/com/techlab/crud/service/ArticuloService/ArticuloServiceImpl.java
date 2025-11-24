@@ -55,7 +55,8 @@ public class ArticuloServiceImpl implements ArticuloService {
         if (articuloOpt.isPresent()) {
             Articulo existente = articuloOpt.get();
             existente.setActivo(true);
-            existente.setCategoria(categoriaCompleta); 
+            existente.setCategoria(categoriaCompleta);
+            existente.setImageUrl(articulo.getImageUrl()); 
             existente.setPrecio(articulo.getPrecio());
             existente.setMarca(articulo.getMarca());
             int existenteStock = existente.getStock() == null ? 0 : existente.getStock();
@@ -152,6 +153,7 @@ public class ArticuloServiceImpl implements ArticuloService {
         
         articuloExistente.setNombre(articulo.getNombre());
         articuloExistente.setMarca(articulo.getMarca());
+        articuloExistente.setImageUrl(articulo.getImageUrl());
         articuloExistente.setPrecio(articulo.getPrecio());
         articuloExistente.setStock(articulo.getStock());
         articuloExistente.setActivo(articulo.getActivo()); 

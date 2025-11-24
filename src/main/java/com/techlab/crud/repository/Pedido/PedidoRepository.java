@@ -11,5 +11,6 @@ import java.util.List;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByEstadoNot(String estado);
+    List<Pedido> findByClienteId(Long clienteId);
 
 }

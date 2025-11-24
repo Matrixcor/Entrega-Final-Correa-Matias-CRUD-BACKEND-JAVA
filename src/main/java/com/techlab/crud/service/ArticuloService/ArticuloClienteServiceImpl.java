@@ -21,6 +21,7 @@ public class ArticuloClienteServiceImpl implements ArticuloClienteService {
         dto.setArticuloId(articulo.getId());
         dto.setNombre(articulo.getNombre());
         dto.setMarca(articulo.getMarca());
+        dto.setImageUrl(articulo.getImageUrl());
         dto.setStock(articulo.getStock());
         dto.setPrecio(articulo.getPrecio());
         

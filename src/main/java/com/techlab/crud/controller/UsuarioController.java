@@ -29,6 +29,12 @@ public class UsuarioController {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
     }
     
+    /*
+
+    SECCION SOLO PARA ADMINISTRADORES O SUPER USUARIOS
+    APLICAR POLITICAS DE ACCESO POR ROLES, SE HARA UNA SECCION LOGIN CON JWT O SESSION
+    
+    */
     @GetMapping
     public ResponseEntity<List<Usuario>> getAllActivos() {
         List<Usuario> usuarios = userService.findAllActivos();

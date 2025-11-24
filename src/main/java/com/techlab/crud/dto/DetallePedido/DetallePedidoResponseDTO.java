@@ -12,7 +12,8 @@ public class DetallePedidoResponseDTO implements Serializable {
     private Long articuloId; 
 
     private String nombreArticulo;
-    private String marcaArticulo; 
+    private String marcaArticulo;
+    private String imageUrlArticulo;
     private Double precioUnidad; 
     private Integer cantidad;
     private Double subtotal;

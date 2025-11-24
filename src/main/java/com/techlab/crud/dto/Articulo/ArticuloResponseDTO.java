@@ -12,9 +12,10 @@ public class ArticuloResponseDTO {
     private Long id;
     private String nombre;
     private String marca;
+    private String imageUrl;
     private Double precio;
     private Integer stock;
     private Boolean activo;
     
-   private CategoriaResponseDTO categoria;
+    private CategoriaResponseDTO categoria;
 }

@@ -11,6 +11,7 @@ public class ArticuloStockPrecioDTO implements Serializable {
     private Long articuloId;
     private String nombre; 
     private String marca; 
+    private String imageUrl;
     private Double precio; 
     private Integer stock;
 }

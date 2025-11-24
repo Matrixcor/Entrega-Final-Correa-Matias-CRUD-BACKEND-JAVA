@@ -1,6 +1,5 @@
 package com.techlab.crud.model.Pedido;
 
-//import com.techlab.crud.model.Articulo.Articulo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,9 @@ public class DetallePedido {
     private Double precioUnidad; 
     private Integer cantidad;
     private Double subtotal;
+
+    @Column(length = 500)
+    private String imageUrlArticulo;
 
     @Column(name = "articulo_id", nullable = false)
     private Long articuloId;

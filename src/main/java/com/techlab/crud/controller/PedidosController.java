@@ -5,6 +5,7 @@ import com.techlab.crud.dto.Pedido.PedidoResponseDTO;
 import com.techlab.crud.dto.EstadoPedidoDTO;
 import com.techlab.crud.exception.ArticuloNoEncontradoException;
 import com.techlab.crud.exception.StockInsuficienteException;
+import com.techlab.crud.exception.UsuarioNoEncontradoException;
 import com.techlab.crud.model.Pedido.Pedido;
 import com.techlab.crud.mapper.PedidoMapper; 
 import com.techlab.crud.service.PedidoService.PedidoService;
@@ -17,8 +18,10 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/* FUNCIONALIDADES PARA CUANDO REFACTORICE EL CODIGO CON SESSION , JWT y politica de roles */
+
 @RestController
-@RequestMapping("/api/pedidos") 
+@RequestMapping("/api") 
 public class PedidosController {
 
     @Autowired
@@ -27,7 +30,7 @@ public class PedidosController {
     @Autowired
     private PedidoMapper pedidoMapper;
 
-    @PostMapping
+    @PostMapping("/pedidos")
     public ResponseEntity<?> crearPedido(@Valid @RequestBody PedidoRequestDTO pedidoDTO) {
         try {
             Pedido pedidoCreado = pedidoService.crearPedido(pedidoDTO);
@@ -45,8 +48,29 @@ public class PedidosController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
         }
     }
-    
-    @GetMapping
+
+    @GetMapping("/usuarios/{clienteId}/pedidos")
+    public ResponseEntity<List<PedidoResponseDTO>> findByClienteId(
+        @PathVariable Long clienteId) {
+        
+        // aqui va validaciones de seguridad del cliente posterior JWT.
+        //para evitar que se coloque cualquier clienteId
+        
+        try {
+            List<Pedido> pedidos = pedidoService.findByClienteId(clienteId);
+            List<PedidoResponseDTO> responseList = pedidos.stream()
+                .map(pedidoMapper::toDto)
+                .collect(Collectors.toList());
+            return new ResponseEntity<>(responseList, HttpStatus.OK);
+        
+        } catch (UsuarioNoEncontradoException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+        }
+    }
+
+    /* FUNCIONALIDADES PARA CUANDO REFACTORICE EL CODIGO CON SESSION , JWT y politica de roles */
+
+    @GetMapping("/pedidos")
     public ResponseEntity<List<PedidoResponseDTO>> listarPedidos() { 
         List<Pedido> pedidos = pedidoService.findAll();
         List<PedidoResponseDTO> responseList = pedidos.stream()
@@ -74,7 +98,7 @@ public class PedidosController {
         
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/{pid}")
     public ResponseEntity<Void> eliminarPedido(@PathVariable Long pid) {
         pedidoService.deleteById(pid);

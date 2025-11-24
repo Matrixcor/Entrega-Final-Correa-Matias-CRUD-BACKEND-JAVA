@@ -3,11 +3,13 @@ package com.techlab.crud.service.PedidoService;
 import com.techlab.crud.model.Pedido.Pedido;
 import com.techlab.crud.model.Pedido.DetallePedido;
 import com.techlab.crud.repository.Pedido.PedidoRepository;
+import com.techlab.crud.repository.Usuario.UserRepository;
 import com.techlab.crud.service.ArticuloService.ArticuloClienteService;
 import com.techlab.crud.dto.Articulo.ArticuloStockPrecioDTO;
 import com.techlab.crud.dto.DetallePedido.DetallePedidoRequestDTO;
 import com.techlab.crud.dto.Pedido.PedidoRequestDTO;
 import com.techlab.crud.exception.StockInsuficienteException;
+import com.techlab.crud.exception.UsuarioNoEncontradoException;
 import com.techlab.crud.exception.PedidoNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Autowired
     private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private ArticuloClienteService articuloClienteService;
@@ -56,10 +61,12 @@ public class PedidoServiceImpl implements PedidoService {
             }
 
             DetallePedido detalle = new DetallePedido();
-            //detalle.setArticuloId(articuloData.getId());
+
             detalle.setArticuloId(articuloData.getArticuloId());
             detalle.setPrecioUnidad(articuloData.getPrecio());
             detalle.setNombreArticulo(articuloData.getNombre());
+            detalle.setMarcaArticulo(articuloData.getMarca());
+            detalle.setImageUrlArticulo(articuloData.getImageUrl());
             detalle.setCantidad(stockSolicitado);
             
             double subTotalCalculadoLocal = stockSolicitado * articuloData.getPrecio();
@@ -79,6 +86,17 @@ public class PedidoServiceImpl implements PedidoService {
         nuevoPedido.setEstado("PENDIENTE"); 
         
         return pedidoRepository.save(nuevoPedido); 
+    }
+    
+    @Override
+    @Transactional("pedidosTransactionManager")
+    public List<Pedido> findByClienteId(Long usuarioId) {
+        
+        Objects.requireNonNull(usuarioId, "El ID del usuario no puede ser nulo");
+        if (!userRepository.existsById(usuarioId)) {
+            throw new UsuarioNoEncontradoException(usuarioId);
+        }
+        return pedidoRepository.findByClienteId(usuarioId); 
     }
 
     @Override

@@ -46,26 +46,6 @@ public class ArticulosController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @PutMapping("/{aid}")
-    public ResponseEntity<?> updateArticulo(
-            @PathVariable Long aid, 
-            @RequestBody ArticuloRequestDTO articuloDTO) {
-        
-        try {
-            Articulo articuloDetails = articuloMapper.toEntity(articuloDTO); 
-            Articulo articuloActualizado = articuloService.update(aid, articuloDetails);
-            ArticuloResponseDTO responseDTO = articuloMapper.toDto(articuloActualizado);
-            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (CategoriaNoEncontradaException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error al actualizar: " + e.getMessage());
-        }
-    }
 
     @GetMapping("/{aid}")
     public ResponseEntity<ArticuloResponseDTO> obtenerPorId(@PathVariable Long aid) {
@@ -95,6 +75,32 @@ public class ArticulosController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
         }
         return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+
+    /* PARA  FUNCIONES DE ADMINISTRADOS ECOMMERCE 
+       SE DEJA ESTA OPCION POR SI EL PROYECTO ESCALA A FUTURO, CLARO
+       CON MODIFICACIONES DE ENDPOINTS SEGURO
+    */
+
+    @PutMapping("/{aid}")
+    public ResponseEntity<?> updateArticulo(
+            @PathVariable Long aid, 
+            @RequestBody ArticuloRequestDTO articuloDTO) {
+        
+        try {
+            Articulo articuloDetails = articuloMapper.toEntity(articuloDTO); 
+            Articulo articuloActualizado = articuloService.update(aid, articuloDetails);
+            ArticuloResponseDTO responseDTO = articuloMapper.toDto(articuloActualizado);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (CategoriaNoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error al actualizar: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{aid}")

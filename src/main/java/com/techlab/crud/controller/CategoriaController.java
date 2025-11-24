@@ -16,6 +16,12 @@ public class CategoriaController {
     @Autowired
     private CategoriaService categoriaService;
 
+    /*
+
+    TAMBIEN PARA SECCION ADMINISTRADORES DE SITIO, NO PARA EL USUARIO COMUN.
+    SE PODRIA COLOCAR ACCESO POR ROLES A FUTURO.
+    
+    */
     @PostMapping
     public ResponseEntity<Categoria> createCategoria(@RequestBody Categoria categoria) {
         Categoria nuevaCategoria = categoriaService.save(categoria);

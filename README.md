@@ -74,7 +74,9 @@ Esta aplicación utiliza múltiples fuentes de datos. Debes crear y configurar l
 
 - El acceso a las rutas `/api/pedidos/**`, `/api/articulos/**`, y `/api/usuarios/**` está configurado para **permitir el acceso libre** (`permitAll()`) para facilitar las pruebas.
 
-*Nota: Para cualquier otra ruta no especificada, se requiere autenticación (Basic Auth).*
+- En una futura refactorizacion de codigo, se implementara JSON WEB TOKEN o SESSION. se modificara el endpoint "api/pedidos"
+para que solo sea accesible mediante autenticacion.
+- Tambien se aplicara politica de roles.
 
 ## Ejecución de la Aplicación
 
@@ -99,12 +101,13 @@ La URL base para todos los endpoints es `http://localhost:8080/api/`
 
 ### Pedidos
 
-| Método | URL                     | Descripción | Body (JSON) | Respuesta                                   |
-| :---   | :---                    | :---        | :---        | :---                                        |
-| `GET`  | `/pedidos`              | Obtiene la lista completa de pedidos. | - | `200 OK` (Lista de Pedidos) |
-| `GET`  | `/pedidos/{pid}`        | Obtiene un pedido por su ID.          | - | `200 OK` (Detalle del Pedido) |
-| `PATCH`| `/pedidos/{pid}/estado` | **Actualiza parcialmente el estado** de un pedido. | `{"estado": "ENVIADO"}` | `200 OK` (Pedido actualizado) |
-| `POST` | `/pedidos`              | Crea un nuevo pedido. | (Pendiente de implementar) | `201 Created` |
+| Método | URL                         | Descripción | Body (JSON) | Respuesta                                   |
+| :---   | :---                        | :---        | :---        | :---                                        |
+| `GET`  | `/usuario/{clienteId}/pedidos`| Obtiene la lista completa de pedidos de usuario. | - | `200 OK` (Lista de Pedidos) |
+| `GET`  | `/pedidos`                  | Obtiene la lista completa de pedidos. | - | `200 OK` (Lista de Pedidos) |
+| `GET`  | `/pedidos/{pid}`            | Obtiene un pedido por su ID.          | - | `200 OK` (Detalle del Pedido) |
+| `PATCH`| `/pedidos/{pid}/estado`     | **Actualiza parcialmente el estado** de un pedido. | `{"estado": "ENVIADO"}` | `200 OK`|
+| `POST` | `/pedidos`                  | Crea un nuevo pedido. | (Pendiente de implementar) | `201 Created` |
 
 #  Reglas de Transición de Estado
 
@@ -142,7 +145,7 @@ La URL base para todos los endpoints es `http://localhost:8080/api/`
 - src/main/java/com/techlab/crud/dto/ - Objetos de Transferencia de Datos para enviar y recibir datos a través de los endpoints.
 - src/main/java/com/techlab/crud/exception/ - manejo de excepciones.
 - src/main/java/com/techlab/crud/mapper/ - Mapeo de Entidades a DTOs y viceversa. 
-- src/main/java/com/techlab/crud/repository/ — Repositorios Spring Data
-- src/main/java/com/techlab/crud/service/ — Interfaces e implementaciones de servicios
-- src/main/java/com/techlab/crud/controller/ — Controladores REST
-- src/main/resources/application.properties — Configuración principal
+- src/main/java/com/techlab/crud/repository/ — Repositorios Spring Data.
+- src/main/java/com/techlab/crud/service/ — Interfaces e implementaciones de servicios.
+- src/main/java/com/techlab/crud/controller/ — Controladores REST.
+- src/main/resources/application.properties — Configuración principal.

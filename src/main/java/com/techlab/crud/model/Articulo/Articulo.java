@@ -21,6 +21,9 @@ public class Articulo {
     private String marca;
     private Double precio;
     private Integer stock;
+    
+    @Column(length = 500) 
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name = "categoria_id") 

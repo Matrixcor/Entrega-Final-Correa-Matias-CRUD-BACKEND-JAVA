@@ -10,6 +10,7 @@ public class ArticuloRequestDTO {
     private Integer stock;
     private Boolean activo;
     private Categoria categoria;
+    private String imageUrl;
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -28,4 +29,7 @@ public class ArticuloRequestDTO {
     
     public Categoria getCategoria() { return categoria; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
