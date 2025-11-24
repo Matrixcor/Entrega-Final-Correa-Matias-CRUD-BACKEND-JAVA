@@ -1,6 +1,6 @@
 HELP.md
 .env
-.application.properties
+.properties
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -33,6 +33,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Spring Boot ###
+# Ignorar completamente los archivos de configuración locales
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+
+# Si usás YAML:
+src/main/resources/application.yml
+src/main/resources/application-*.yml
 
 ### Logs and helper scripts ###
 logs/
